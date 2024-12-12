@@ -63,8 +63,8 @@ Table hashtags {
 
 Table hashtags_posts{
   id SERIAL [pk, increment]
-  hashtag_id INTEGER [ref: > hastag.id]
-  post_id INTEGER [ref: > post.id]  
+  hashtag_id INTEGER [ref: > hashtags.id]
+  post_id INTEGER [ref: > posts.id]  
 }
 
 Table followers {
