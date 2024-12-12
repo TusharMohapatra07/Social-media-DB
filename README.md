@@ -23,8 +23,8 @@ We need to ensure either phone or email exists. If the user chooses to sign up w
 ```sql
 CHECK(
 	(email IS NOT NULL OR phone IS NOT NULL) AND 
-    ( email IS NULL OR 
-    (email IS NOT NULL AND password IS NOT NULL))
+    	( email IS NULL OR 
+    	(email IS NOT NULL AND password IS NOT NULL))
 )
 ```
 
