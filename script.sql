@@ -66,3 +66,16 @@ CREATE TABLE caption_tags (
 	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
 	UNIQUE(user_id, post_id)
 );
+
+CREATE TABLE hashtags (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	title VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE hashtags_posts (
+	id SERIAL PRIMARY KEY,
+	hashtag_id INTEGER NOT NULL REFERENCES hashtags(id) ON DELETE CASCADE,
+	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+	UNIQUE(hashtag_id, post_id)
+);
