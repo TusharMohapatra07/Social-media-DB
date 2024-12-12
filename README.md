@@ -2,6 +2,7 @@
 
 ## Final DB Design
 
+![ER Diagram](er-diagram.png)
 
 ## Users Table  
 
