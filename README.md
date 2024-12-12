@@ -125,5 +125,5 @@ To complete the idea, we're going to make sure that each combination of `user_id
 UNIQUE(user_id, post_id, comment_id)
 ```
 
-For Ex: If an user with id 1 liked a comment with id 4 under a post with id 10,
+**For ex**: If an user with id 1 liked a comment with id 4 under a post with id 10,
 two rows will be created in db with corresponding (user_id, post_id, comment_id) values as (1, 10, NULL) and (1, NULL, 4).
