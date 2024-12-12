@@ -69,7 +69,7 @@ TABLE comments (
     id SERIAL PRIMATY KEY,
     created_at TIMESTAMP WITH TIME ZONE DEFUALT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFUALT CURRENT_TIMESTAMP,
-    contents VARCHAR(240) NOT NULL,
+    contents VARCHAR(240) NOT NULL
 )    
 ```
 
@@ -84,3 +84,44 @@ Associating a comment with a post(post below which the comment was put):
 ```sql
 post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE
 ``` 
+
+## Likes Table
+
+```sql
+TABLE likes (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+)
+```
+
+Associating an user with a like:
+
+```sql
+user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
+```
+
+Now, a user can like a comment, a port or both. Associating a post or comment with a like:
+
+```sql
+post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+comment_id INTEGER REFERENCES comments(id) ON DELETE CASCADE
+```
+
+As we're accounting for like on a comment & like on a post in a single table, we need to add a `CHECK` constraint. The approach would be to ensure that only a single value among the `post_id` and `comment_id` can be non null:
+
+```sql
+CHECK(
+    (post_id IS NOT NULL AND comment_id IS NULL)
+    OR
+    (post_id IS NULL AND comment_id IS NOT NULL)
+)
+```
+
+To complete the idea, we're going to make sure that each combination of `user_id`, `post_id`, `comment_id` is unique:
+
+```sql
+UNIQUE(user_id, post_id, comment_id)
+```
+
+For Ex: If an user with id 1 liked a comment with id 4 under a post with id 10,
+two rows will be created in db with corresponding (user_id, post_id, comment_id) values as (1, 10, NULL) and (1, NULL, 4).

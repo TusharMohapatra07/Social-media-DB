@@ -33,3 +33,17 @@ CREATE TABLE comments (
 	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE
 );
+
+CREATE TABLE likes (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+	comment_id INTEGER REFERENCES comments(id) ON DELETE CASCADE,
+	CHECK(
+    (post_id IS NOT NULL AND comment_id IS NULL)
+    OR
+    (post_id IS NULL AND comment_id IS NOT NULL)
+    ),
+	UNIQUE(user_id, post_id, comment_id)
+);
