@@ -1,9 +1,7 @@
 ## Final DB Design
----
 
 
 ## Users Table  
----
 
 ```sql
 Table users{
@@ -29,7 +27,7 @@ CHECK(
 ```
 
 ## Posts Table
----
+
 ```sql
 TABLE posts(
 	id SERIAL PRIMARY KEY,
