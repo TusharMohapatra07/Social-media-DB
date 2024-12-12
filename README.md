@@ -197,3 +197,24 @@ To ensure that a post can have a set of unique hashtags only, we're going to put
 ```sql
 UNIQUE(hashtag_id, post_id)
 ```
+
+## Followers table
+
+In this table, we're going to associate an user who is being followed with the followers. We need to account for the case where an user follows another user but isn't followed by the same user. The schema for `followers` would be:
+
+```sql
+TABLE followers (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	leader_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- user that is being followed
+	follower_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE 
+)
+```
+
+To ensure that an user can only be followed once by another user, we need to add an `UNIQUE` constraint on leader_id and follower_id pair:
+
+```sql
+UNIQUE(leader_id, follower_id)
+```
+
+**For Ex:** An user with id 1 follows another user with id 2, the pair of value of (leader_id, follower_id) stored would be (2, 1). Now, user 2 decides to follow back user 1, then the value stored would be (1, 2).
