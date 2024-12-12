@@ -168,3 +168,32 @@ We need to ensure that an user can only be tagged once per caption. The `UNIQUE`
 ```sql
 UNIQUE(user_id, post_id)
 ```
+
+## Hashtags System
+
+We need to consider that an user can query posts associated with a hash tag. Directly associating posts with tags will lead to duplication of values and wastage of memory. To avoid this, we're going to create two tables: `hashtags` and `hastags_posts`.
+
+The `hashtags` table would contain all the available hashtag titles. The title property should be unique:
+
+```sql
+TABLE hashtags (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	title VARCHAR(20) NOT NULL UNIQUE
+)
+```
+
+The `hashtags_posts` table associate a tag with a post. We can query posts associated with a tag using the `hashtag_id`:
+
+```sql
+TABLE hashtags_posts (
+	id SERIAL PRIMARY KEY,
+	hashtag_id INTEGER NOT NULL REFERENCES hashtags(id) ON DELETE CASCADE,
+	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE
+)
+```
+
+To ensure that a post can have a set of unique hashtags only, we're going to put up an `UNIQUE` constraint:
+```sql
+UNIQUE(hashtag_id, post_id)
+```
