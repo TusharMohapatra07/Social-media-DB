@@ -61,3 +61,26 @@ Associating the post with an user:
 ```sql
 user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 ```
+
+## Comments Table
+
+```sql
+TABLE comments (
+    id SERIAL PRIMATY KEY,
+    created_at TIMESTAMP WITH TIME ZONE DEFUALT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFUALT CURRENT_TIMESTAMP,
+    contents VARCHAR(240) NOT NULL,
+)    
+```
+
+Associating a comment with an user(the author of the comment):
+
+```sql
+user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
+``` 
+
+Associating a comment with a post(post below which the comment was put):
+
+```sql
+post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE
+``` 
