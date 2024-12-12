@@ -21,7 +21,7 @@ Table users(
 )
 ```
 
-We need to ensure either phone or email exists. If the user chooses to sign up with an email, there should be a password associated with the email.  The `CHECK` constrainst would be:
+We need to ensure that either `phone` or `email` exists. If the user chooses to sign up with an email, there should be a password associated with the email.  The `CHECK` constrainst would be:
 
 ```sql
 CHECK(
@@ -45,8 +45,7 @@ TABLE posts(
 )
 ```
 
-When user create a post, they can either choose to associate a location with the post or not. If the user chooses to associate a location, we need to ensure that both the latitude and longitude is set. we also need to make sure that the latitude and longitude provided is valid.
-
+When an user creates a post, they can either choose to associate a location with the post or not. If the user associates a location, we need to ensure that both the `lat` (latitude) and `lng` (longitude) are set and valid.
 The `CHECK` constraint for `lat` would be:
 
 ```sql
@@ -59,7 +58,7 @@ The `CHECK` constraint for `lng` would be:
 lng REAL CHECK(lng IS NULL OR (lng >= -180 AND lng <= 180))
 ```
 
-Associating the post with an user:
+To associate the post with an user:
 
 ```sql
 user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
@@ -76,13 +75,13 @@ TABLE comments (
 )    
 ```
 
-Associating a comment with an user(the author of the comment):
+To associate a comment with a user (the author of the comment):
 
 ```sql
 user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 ``` 
 
-Associating a comment with a post(post below which the comment was put):
+To associate a comment with a post (the post under which the comment was made):
 
 ```sql
 post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE
@@ -97,13 +96,13 @@ TABLE likes (
 )
 ```
 
-Associating an user with a like:
+To associate a like with a user:
 
 ```sql
 user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 ```
 
-Now, a user can like a comment, a port or both. Associating a post or comment with a like:
+A user can like a post, a comment, or both. To associate a like with a post or comment:
 
 ```sql
 post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
@@ -172,7 +171,7 @@ UNIQUE(user_id, post_id)
 
 ## Hashtags System
 
-We need to consider that an user can query posts associated with a hash tag. Directly associating posts with tags will lead to duplication of values and wastage of memory. To avoid this, we're going to create two tables: `hashtags` and `hastags_posts`.
+We need to consider that an user can query posts associated with a hashtag. Directly associating posts with tags will lead to duplication of values and wastage of memory. To avoid this, we're going to create two tables: `hashtags` and `hastags_posts`.
 
 The `hashtags` table would contain all the available hashtag titles. The title property should be unique:
 
@@ -201,7 +200,7 @@ UNIQUE(hashtag_id, post_id)
 
 ## Followers table
 
-In this table, we're going to associate an user who is being followed with the followers. We need to account for the case where an user follows another user but isn't followed by the same user. The schema for `followers` would be:
+We're going to associate an user who is being followed with the followers. We need to account for the case where an user follows another user but isn't followed by the same user. The schema for `followers` would be:
 
 ```sql
 TABLE followers (
@@ -218,4 +217,5 @@ To ensure that an user can only be followed once by another user, we need to add
 UNIQUE(leader_id, follower_id)
 ```
 
-**For Ex:** An user with id 1 follows another user with id 2, the pair of value of (leader_id, follower_id) stored would be (2, 1). Now, user 2 decides to follow back user 1, then the value stored would be (1, 2).
+**For Ex:** If user with ID 1 follows user with ID 2, the values stored are `(leader_id = 2, follower_id = 1)`.
+If user 2 follows back, the stored values are `(leader_id = 1, follower_id = 2)`.
