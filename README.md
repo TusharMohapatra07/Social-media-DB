@@ -6,7 +6,7 @@
 ## Users Table  
 
 ```sql
-Table users{
+Table users(
 	id SERIAL,
 	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -17,7 +17,7 @@ Table users{
 	email VARCHAR(40),
 	password VARCHAR(50),
 	status VARCHAR(15),
-}	
+)
 ```
 
 We need to ensure either phone or email exists. If the user chooses to sign up with an email, there should be a password associated with the email.  The `CHECK` constrainst would be:
@@ -127,3 +127,44 @@ UNIQUE(user_id, post_id, comment_id)
 
 **For ex**: If an user with id 1 liked a comment with id 4 under a post with id 10,
 two rows will be created in db with corresponding (user_id, post_id, comment_id) values as (1, 10, NULL) and (1, NULL, 4).
+
+## Tag system
+
+A tag can be associated with a post. An user can be tagged inside a photo or in the caption. To tackle this, we're going to create two tables `photo_tags` and `caption_tags`
+
+The schema of `photo_tags` would be:
+
+```sql
+TABLE photo_tags (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- user that was tagged
+	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE, -- post in which the user was tagged
+	x INTEGER NOT NULL, -- x-coordinate of the tag on photo
+	y INTEGER NOT NULL -- y-coordinate of the tag on photo
+);
+```
+
+We need to make sure that an user can be only tagged once per photo. The `UNIQUE` constraint would be:
+
+```sql
+UNIQUE(user_id, post_id)
+```
+
+The schema of `caption_tags` would be:
+
+```sql
+TABLE caption_tags (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- user that was tagged
+	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE -- post in which the user was tagged
+)
+```
+
+We need to ensure that an user can only be tagged once per caption. The `UNIQUE` constraint would be:
+
+```sql
+UNIQUE(user_id, post_id)
+```
